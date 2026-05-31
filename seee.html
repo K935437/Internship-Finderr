@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="mmm.css" />
+    <style>
+        /* --- BASE STYLES --- */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #262a34; 
+            color: #ccc;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+  
+        .hidden-consent {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Styles for centered modal with slide-up effect */
+        .center-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+        }
+
+        .center-modal.show {
+            display: flex;
+        }
+
+        .social-media {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .social-media a {
+            color: #fff;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-media a:hover {
+            color: #00ffff;
+            transform: translateY(-5px) scale(1.1);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+
+        .social-media a:hover .fa-tiktok {
+            filter: drop-shadow(2px 0px 0px #ff0050) drop-shadow(-2px 0px 0px #00f2ea);
+        }
+
+        .modal-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 80%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .center-modal.show .modal-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .close-center {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Consent Overlay -->
+    <div id="consentBanner" class="cookie-overlay">
+        <div class="cookie-card">
+            <i class="fas fa-shield-halved" style="font-size: 3.5rem; color: #00ffff; margin-bottom: 20px;"></i>
+            <h2>Entry Protocol</h2>
+            <p>Welcome to <strong>MediaConnect</strong>. To maintain the integrity of our creative network and proceed to the dashboard, please accept our terms and cookie usage.</p>
+            <button class="accept-btn" onclick="acceptCookies()">Accept & Enter</button>
+        </div>
+    </div>
+
+    <!-- Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container" style="padding-top: 20px;">
+            <nav class="glass">
+                <logo style="display: flex; align-items: center; gap: 15px;">
+                    <img src="i see.png" alt="Your Logo" width="50" />
+                    <span style="color: #00ffff; font-size: 1rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; font-family: 'Orbitron', sans-serif;">
+                        Internship Finder
+                    </span>
+                </logo>
+                <div class="nav-links">
+                    <a href="INDEX.html" >Home</a>
+                    <a href="seee.html" class="active">About Us</a>
+                    <a href="SEV.html">Services</a>
+                    <a href="companies.html">Companies</a>
+                    <a href="CON.html">Contact Us</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HOME PAGE CONTENT -->
+    <div id="home" class="page active">
+        <div class="container">
+            <div class="content-wrapper">
+                <!-- Hero Section -->
+                <section class="hero glass" style="position: relative; overflow: hidden; height: 400px;">
+                    <style>
+                        .hero-image {
+                            position: relative;
+                            height: 90%;
+                        }
+
+                        .slideshow {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                        }
+
+                        .slideshow .slide {
+                            display: none;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            transition: opacity 1s ease-in-out;
+                        }
+
+                        .slideshow .slide.active {
+                            display: block;
+                            opacity: 1;
+                        }
+
+                        .hero-content {
+                            position: relative;
+                            z-index: 2;
+                            padding: 20px;
+                            color: #fff;
+                        }
+
+                        .cta-button {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            background-color: rgba(255, 255, 255, 0.3);
+                            color: #fff;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            margin-top: 10px;
+                        }
+                    </style>
+
+                    <div class="hero-image">
+                        <div class="slideshow">
+                            <img src="o.jpg" alt="Modern Technology Interaction 1" class="slide active" />
+                            <img src="IMG_2592.JPG" alt="Modern Technology Interaction 2" class="slide" />
+                            <img src="IMG_2593.JPG" alt="Modern Technology Interaction 3" class="slide" />
+                        </div>
+                    </div>
+
+                    <!-- Title and subtitle -->
+                    <div class="title-section">
+                        <h1>Welcome to <span class="highlight"> the Future</span></h1>
+                        <p> Bridging the Gap Between Multimedia Students and the Media Industry.</p>
+                        <a href="6.html" class="cta-button" onclick="showPage('about')">Learn More</a>
+                    </div>
+
+                    <script>
+                        // JavaScript for slideshow
+                        let currentSlide = 0;
+                        const slides = document.querySelectorAll('.slideshow .slide');
+
+                        function showNextSlide() {
+                            slides.forEach((slide, index) => {
+                                slide.classList.toggle('active', index === currentSlide);
+                            });
+                            currentSlide = (currentSlide + 1) % slides.length;
+                        }
+
+                        // Change slide every 3 seconds
+                        setInterval(showNextSlide, 3000);
+                    </script>
+                </section>
+
+                <!-- Features Section -->
+                <section class="features">
+                    <div class="feature-card glass">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Modern Design</h3>
+                        <p>Pixel Perfect UI.</p>
+                    </div>
+                    
+                    <div class="feature-card glass">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Fast Performance</h3>
+                        <p>Lightning Fast Loading.</p>
+                    </div>
+                    
+                    <div class="feature-card glass">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure & Reliable</h3>
+                        <p>End-to-End Protection.</p>
+                    </div>
+
+                    <div class="feature-card glass">
+                        <div class="feature-icon">🎧</div>
+                        <h3>24/7 Support</h3>
+                        <p>Always here to help.</p>
+                    </div>
+                    
+                    <div class="feature-card glass">
+                        <div class="feature-icon">📱</div>
+                        <h3>User Friendly</h3>
+                        <p>Intuitive Experience.</p>
+                    </div>
+                    
+                    <div class="feature-card glass">
+                        <div class="feature-icon">☁️</div>
+                        <h3>Cloud Sync</h3>
+                        <p>Access Anywhere.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- CORRECTED ALIGNMENT FOOTER SECTION -->
+    <div id="footer" style="margin-top: 40px;">
+        <div class="container">
+            <footer class="glass">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="seee.html" onclick="showPage('about')">About Us</a>
+                        <a href="#" id="termsButton">Terms of Service</a>
+                        <a href="CON.html" onclick="showPage('contact')">Contact</a>
+                    </div>
+                    <div class="copyright">
+                        &copy; 2026 Internship Finder. Crafted with passion. Design by GlitchhKing
+                    </div>
+                </div>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/glitchhking" target="_blank" title="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@glitchhking" target="_blank" title="Follow us on TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Centered modal for Terms and Conditions -->
+    <div id="centerModal" class="center-modal">
+        <div class="modal-box">
+            <span class="close-center" id="closeCenter">&times;</span>
+            <h2 style="color: black;">Terms and Conditions</h2>
+            <p style="color: black;">Welcome to the Internship Finder, Wagwan Users! By accessing or using our website, you agree to comply with these Terms and Conditions. Please read them carefully. If you do not agree, do not use our site.<br>
+            <strong>Use of Content:</strong> All content on this website is owned or licensed by <strong>Internship Finder.</strong> Unauthorized use is prohibited.<br>
+            <strong>User Conduct:</strong> Users agree not to engage in harmful, illegal, or disruptive activities.<br>
+            <strong>Privacy:</strong> Your data is handled according to our Privacy Policy, which is incorporated into these terms.<br>
+            <strong>Liability:</strong> Wagwan Users is not liable for damages resulting from the use of this site.</p>
+        </div>
+    </div>
+
+    <!-- Scripts Frameworks (Trigger Setup + Consent Storage) -->
+    <script>
+        // Consent Overlay Logic
+        function acceptCookies() {
+            const banner = document.getElementById('consentBanner');
+            banner.classList.add('hidden-consent');
+            setTimeout(() => { banner.style.display = 'none'; }, 500);
+            localStorage.setItem('wagwan_consent', 'true');
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('wagwan_consent') === 'true') {
+                const banner = document.getElementById('consentBanner');
+                if (banner) banner.style.display = 'none';
+            }
+        });
+
+        // Script to trigger modal
+        const termsBtn = document.getElementById('termsButton');
+        const modal = document.getElementById('centerModal');
+        const closeBtn = document.getElementById('closeCenter');
+
+        // Open modal on click
+        termsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.classList.add('show');
+        });
+
+        // Close modal on click of close button
+        closeBtn.addEventListener('click', function() {
+            modal.classList.remove('show');
+        });
+
+        // Close modal when clicking outside the modal box
+        window.addEventListener('click', function(e) {
+            if (e.target == modal) {
+                modal.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

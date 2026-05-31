@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact Us</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="mmm.css" />
+<style>
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: #262a34; 
+    color: #fff;
+  }
+
+  /* --- SOCIAL MEDIA & FOOTER STYLES --- */
+  .social-media {
+    display: flex;
+    justify-content: center;
+    gap: 30px; 
+    margin-bottom: 20px;
+  }
+
+  .social-media a {
+    color: #fff;
+    font-size: 2rem; 
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .social-media a:hover {
+    color: #00ffff; 
+    transform: translateY(-5px) scale(1.1);
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+  }
+
+  .social-media a:hover .fa-tiktok {
+    filter: drop-shadow(2px 0px 0px #ff0050) drop-shadow(-2px 0px 0px #00f2ea);
+  }
+
+  /* --- MODAL & POPUP STYLES --- */
+  .center-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 30000;
+  }
+  .center-modal.show { display: flex; }
+  .center-modal .modal-box { 
+    background: #fff; padding: 30px; border-radius: 10px; 
+    max-width: 600px; width: 80%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+    transform: translateY(50px); opacity: 0; transition: all 0.3s ease; 
+    position: relative;
+  }
+  .center-modal.show .modal-box { transform: translateY(0); opacity: 1; }
+  .close-center { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #333; }
+
+  .poster-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 40000;
+  }
+  .poster-overlay.active { display: flex; }
+  .poster-box {
+    position: relative;
+    max-width: 500px; width: 90%;
+    background: #000; padding: 5px;
+    border: 2px solid #00ffff; border-radius: 10px;
+    box-shadow: 0 0 20px #00ffff; transform: scale(0.8); transition: transform 0.3s ease;
+  }
+  .poster-overlay.active .poster-box { transform: scale(1); }
+  .close-poster {
+    position: absolute; top: -15px; right: -15px;
+    background: #00ffff; color: #000; width: 30px; height: 30px;
+    border-radius: 50%; text-align: center; line-height: 28px;
+    font-weight: bold; cursor: pointer; font-size: 20px;
+  }
+
+  /* --- PAGE CONTENT STYLES --- */
+  .title-section { text-align: center; margin-bottom: 10px; }
+  .title-section h1 { font-size: 3em; margin: 0; }
+  .title-section h1 .highlight { color: #00ffff; }
+  .subtitle { text-align: center; font-size: 1em; color: #ccc; margin-bottom: 50px; }
+  .content { display: flex; flex-wrap: wrap; gap: 50px; }
+  .form-section { flex: 1; min-width: 300px; }
+  form { display: flex; flex-direction: column; }
+  input, textarea {
+    background: transparent; border: none; border-bottom: 1px solid #666;
+    padding: 15px 10px; margin-bottom: 20px; font-size: 1em; color: #fff;
+    outline: none; transition: border-color 0.3s;
+  }
+  input:focus, textarea:focus { border-color: #00ffff; }
+  textarea { resize: none; height: 150px; }
+  .send-btn {
+    background-color: transparent; border: 1px solid #00ffff;
+    padding: 15px; border-radius: 50px; font-size: 1em; color: #00ffff;
+    cursor: pointer; transition: background-color 0.3s, color 0.3s;
+  }
+  .send-btn:hover { background-color: #00ffff; color: #000; }
+  .info-section { flex: 1; min-width: 250px; }
+  .info-item { display: flex; align-items: center; margin-bottom: 30px; }
+  .icon {
+    width: 50px; height: 50px; background-color: #222; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-right: 20px; font-size: 24px; color: #00ffff;
+  }
+  .info-text { display: flex; flex-direction: column; }
+  .info-label { font-size: 0.9em; color: #888; }
+  .info-detail { font-size: 1em; font-weight: bold; color: #fff; }
+
+  @media(max-width: 768px) { .content { flex-direction: column; } }
+
+  /* --- CHAT STYLES --- */
+  #chat-toggle {
+    position: fixed; bottom: 20px; right: 20px; background-color: #00ffff;
+    color: #000; padding: 15px 20px; border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer;
+    font-weight: bold; z-index: 9999;
+  }
+  #chat-box {
+    position: fixed; bottom: 70px; right: 20px; width: 300px;
+    max-height: 400px; background-color: rgba(0, 0, 0, 0.85);
+    border: 1px solid #00ffff; border-radius: 10px; display: flex;
+    flex-direction: column; overflow: hidden; transform: translateY(100%);
+    transition: transform 0.3s ease; z-index: 9998;
+  }
+  #chat-box.open { transform: translateY(0); }
+  #chat-header { background-color: #00ffff; padding: 10px; font-weight: bold; color: #000; display: flex; justify-content: space-between; align-items: center; }
+  #chat-messages { flex: 1; padding: 10px; overflow-y: auto; font-size: 0.9em; color: #fff; }
+  #chat-input { display: flex; padding: 10px; border-top: 1px solid #00ffff; }
+  #chat-input input { flex: 1; padding: 8px 10px; border: none; border-radius: 20px; color: #fff; background: #222; }
+  #send-btn { background-color: #00ffff; color: #000; border: none; padding: 8px 16px; margin-left: 10px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+  /* --- AUTH POPUP STYLES --- */
+  .auth-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 11, 14, 0.98); backdrop-filter: blur(10px);
+    z-index: 20000; justify-content: center; align-items: center;
+  }
+  .auth-container { background: #1a1d24; padding: 30px; border-radius: 15px; border: 1px solid #00ffff; width: 350px; text-align: center; }
+  .auth-btn { width: 100%; padding: 12px; background: #00ffff; border: none; border-radius: 5px; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
+  .social-btn { width: 100%; padding: 12px; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.9em; font-weight: bold; margin-top: 10px; text-decoration: none; }
+  .google-btn { background: #fff; color: #000; }
+  .facebook-btn { background: #1877F2; color: #fff; }
+  .apple-btn { background: #000; color: #fff; border: 1px solid #444; }
+</style>
+</head>
+<body>
+
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-container">
+    <h2 style="color:#00ffff">Account Access</h2>
+    <p>Sign in to unlock full site features.</p>
+    <input type="email" placeholder="Email" id="emailInput" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #444; color:#fff;">
+    <input type="password" placeholder="Password" id="passInput" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #444; color:#fff;">
+    <button class="auth-btn" onclick="manualLogin()">Login / Sign Up</button>
+    <div style="margin: 20px 0; border-bottom: 1px solid #444; position: relative;">
+        <span style="position: absolute; top:-10px; left:50%; transform:translateX(-50%); background:#1a1d24; padding:0 10px; color:#666; font-size:0.8rem;">OR</span>
+    </div>
+    <a href="#" class="social-btn google-btn" onclick="setLoggedIn()"><i class="fab fa-google"></i> Sign in with Google</a>
+    <a href="#" class="social-btn facebook-btn" onclick="setLoggedIn()"><i class="fab fa-facebook-f"></i> Sign in with Facebook</a>
+    <a href="#" class="social-btn apple-btn" onclick="setLoggedIn()"><i class="fab fa-apple"></i> Sign in with Apple</a>
+  </div>
+</div>
+
+<div class="bg-shapes">
+  <div class="shape"></div><div class="shape"></div><div class="shape"></div>
+  <div class="shape"></div><div class="shape"></div><div class="shape"></div>
+</div>
+
+<header>
+  <div class="container" style="padding-top: 20px;">
+    <nav class="glass">
+      <logo style="display: flex; align-items: center; gap: 15px;">
+        <img src="i see.png" alt="Your Logo" width="50" />
+        <span style="color: #00ffff; font-size: 1rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; font-family: 'Orbitron', sans-serif;">
+          Internship Finder
+        </span>
+      </logo>
+      <div class="nav-links">
+        <a href="INDEX.html">Home</a>
+        <a href="seee.html">About Us</a>
+        <a href="SEV.html">Services</a>
+        <a href="companies.html">Companies</a>
+        <a href="CON.html" class="active">Contact Us</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="container" style="padding-bottom: 50px;">
+  <div class="title-section" style="margin-top:40px;">
+    <h1>Get in <span class="highlight">Touch</span></h1>
+  </div>
+  <div class="subtitle">With Us</div>
+
+  <div class="content">
+    <div class="form-section">
+      <form>
+        <input type="text" placeholder="Your Name" />
+        <input type="email" placeholder="Your Email" />
+        <input type="text" placeholder="Subject" />
+        <textarea placeholder="Your Message"></textarea>
+        <button type="submit" class="send-btn">Send Message</button>
+      </form>
+    </div>
+    <div class="info-section">
+      <div class="info-item">
+        <div class="icon">📍</div>
+        <div class="info-text">
+          <div class="info-label">Location</div>
+          <div class="info-detail">Lobatse Town, Botoka Street, Plot 1227 </div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="icon">✉️</div>
+        <div class="info-text">
+          <div class="info-label">Email</div>
+          <div class="info-detail">kingphillips58841@gmail.com</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="icon">📞</div>
+        <div class="info-text">
+          <div class="info-label">Phone</div>
+          <div class="info-detail">+267 75083199</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer">
+  <div class="container">
+    <footer class="glass">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="seee.html">About Us</a>
+          <a href="#" id="termsButton">Terms of Service</a>
+          <a href="CON.html">Contact</a>
+        </div>
+        <div class="copyright">
+          &copy; 2026 Internship Finder. Crafted with passion. Design by GlitchhKing
+        </div>
+      </div>
+      <div class="social-media">
+        <a href="https://www.instagram.com/glitchhking" target="_blank" title="Follow us on Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.tiktok.com/@glitchhking" target="_blank" title="Follow us on TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- TERMS MODAL -->
+<div id="centerModal" class="center-modal">
+  <div class="modal-box">
+    <span class="close-center" id="closeCenter">&times;</span>
+    <h2 style="color: black;">Terms and Conditions</h2>
+    <p style="color: black;">Welcome to the Internship Finder, Wagwan Users! By accessing or using our website, you agree to comply with these Terms and Conditions. Please read them carefully. If you do not agree, do not use our site.<br>
+<strong>Use of Content:</strong> All content on this website is owned or licensed by <strong>Internship Finder.</strong> Unauthorized use is prohibited.<br>
+<strong>User Conduct:</strong> Users agree not to engage in harmful, illegal, or disruptive activities.<br>
+<strong>Privacy:</strong> Your data is handled according to our Privacy Policy, which is incorporated into these terms.<br>
+<strong>Liability:</strong> Wagwan Users is not liable for damages resulting from the use of this site.</p>
+  </div>
+</div>
+
+
+<!-- AI ASSISTANT INBOX -->
+<div id="chat-toggle">Inbox</div>
+<div id="chat-box">
+  <div id="chat-header">
+    <span>AI Assistant</span>
+    <span id="close-chat" style="cursor:pointer">×</span>
+  </div>
+  <div id="chat-messages"></div>
+  <div id="chat-input">
+    <input type="text" id="user-input" placeholder="Type..." />
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+
+<script>
+  // --- TERMS MODAL LOGIC ---
+  const termsBtn = document.getElementById('termsButton');
+  const modal = document.getElementById('centerModal');
+  const closeBtn = document.getElementById('closeCenter');
+
+  termsBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    modal.classList.add('show');
+  });
+
+  closeBtn.addEventListener('click', function() {
+    modal.classList.remove('show');
+  });
+
+  window.addEventListener('click', function(e) {
+    if (e.target == modal) {
+      modal.classList.remove('show');
+    }
+  });
+
+   // FUNCTION TO HANDLE LOGGED IN STATE
+  window.onload = function() {
+    if(!sessionStorage.getItem('isLoggedIn')) {
+        document.getElementById('authOverlay').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Lock scrolling
+    }
+  };
+
+  function setLoggedIn() {
+    sessionStorage.setItem('isLoggedIn', 'true');
+    document.getElementById('authOverlay').style.display = 'none';
+    document.body.style.overflow = 'auto'; 
+  }
+
+  function manualLogin() {
+    const email = document.getElementById('emailInput').value;
+    if(email.includes('@')) {
+        setLoggedIn();
+    } else {
+        alert('Please enter a valid email address');
+    }
+  }
+
+ // CHAT LOGIC
+const chatToggle = document.getElementById('chat-toggle');
+const chatBox = document.getElementById('chat-box');
+const chatInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const chatMessages = document.getElementById('chat-messages');
+
+chatToggle.addEventListener('click', () => { chatBox.classList.toggle('open'); });
+document.getElementById('close-chat').onclick = () => { chatBox.classList.remove('open'); };
+
+function addMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.style.marginBottom = "15px";
+    msgDiv.style.textAlign = sender === 'user' ? 'right' : 'left';
+    
+    const bgColor = sender === 'user' ? '#00ffff' : '#444';
+    const textColor = sender === 'user' ? '#000' : '#fff';
+    
+    msgDiv.innerHTML = `<span style="background:${bgColor}; color:${textColor}; padding:8px 12px; border-radius:15px; display:inline-block; font-size: 0.9em; max-width: 85%;">${text}</span>`;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getAIResponse(userText) {
+    const input = userText.toLowerCase();
+    if (input.includes('hello') || input.includes('hi')) return "Hello! I am your Internship Finder assistant. How can I help you today?";
+    if (input.includes('contact')) return "You can reach our team at kingphillips58841@gmail.com or call us at +267 75083199.";
+    if (input.includes('internship') || input.includes('find')) return "I can help you look for available positions. Could you please specify the field or industry you are interested in?";
+    if (input.includes('thanks') || input.includes('thank')) return "You're very welcome! Let me know if you need anything else.";
+    return "I am here to assist you with internship opportunities and general inquiries. If you have a specific question, please feel free to ask!";
+}
+
+sendBtn.addEventListener('click', () => {
+    const text = chatInput.value.trim();
+    if (text === "") return;
+    addMessage(text, 'user');
+    chatInput.value = "";
+    setTimeout(() => {
+        const response = getAIResponse(text);
+        addMessage(response, 'bot');
+    }, 600);
+});
+
+chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendBtn.click();
+});
+</script>
+
+</body>
+</html>

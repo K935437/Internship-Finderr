@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="mmm.css" />
+    <style>
+        /* --- BASE STYLES --- */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #262a34; 
+            color: #fff;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- CONSENT OVERLAY STYLES --- */
+        .cookie-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .cookie-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00ffff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .cookie-card h2 {
+            color: #00ffff;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cookie-card p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .accept-btn {
+            background: #00ffff;
+            color: #000;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .accept-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #00ffff;
+            letter-spacing: 1px;
+        }
+
+        .hidden-consent {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- UNMODIFIED MODAL & SOCIAL MEDIA HOVER STYLES --- */
+        .center-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+        }
+        .center-modal.show { display: flex; }
+        .social-media { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; }
+        .social-media a { color: #fff; font-size: 2rem; transition: all 0.3s ease; text-decoration: none; }
+        .social-media a:hover { color: #00ffff; transform: translateY(-5px) scale(1.1); text-shadow: 0 0 15px rgba(0, 255, 255, 0.7); }
+        .social-media a:hover .fa-tiktok { filter: drop-shadow(2px 0px 0px #ff0050) drop-shadow(-2px 0px 0px #00f2ea); }
+        .modal-box { background: #fff; padding: 30px; border-radius: 10px; max-width: 600px; width: 80%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateY(50px); opacity: 0; transition: all 0.3s ease; position: relative; }
+        .center-modal.show .modal-box { transform: translateY(0); opacity: 1; }
+        .close-center { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #333; }
+
+        /* --- UNMODIFIED POSTER POP-UP STYLES --- */
+        .poster-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; 
+        }
+        .poster-overlay.active { display: flex; }
+        .poster-box {
+            position: relative;
+            max-width: 500px; 
+            width: 90%;
+            background: #000;
+            padding: 5px;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #00ffff;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        .poster-overlay.active .poster-box { transform: scale(1); }
+        .close-poster {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #00ffff;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Consent Overlay -->
+    <div id="consentBanner" class="cookie-overlay">
+        <div class="cookie-card">
+            <i class="fas fa-shield-halved" style="font-size: 3.5rem; color: #00ffff; margin-bottom: 20px;"></i>
+            <h2>Entry Protocol</h2>
+            <p>Welcome to <strong>MediaConnect</strong>. To maintain the integrity of our creative network and proceed to the dashboard, please accept our terms and cookie usage.</p>
+            <button class="accept-btn" onclick="acceptCookies()">Accept & Enter</button>
+        </div>
+    </div>
+
+    <!-- Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container" style="padding-top: 20px;">
+            <nav class="glass">
+                <logo style="display: flex; align-items: center; gap: 15px;">
+                    <img src="i see.png" alt="Your Logo" width="50" />
+                    <span style="color: #00ffff; font-size: 1rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; font-family: 'Orbitron', sans-serif;">
+                        Internship Finder
+                    </span>
+                </logo>
+                <div class="nav-links">
+                    <a href="INDEX.html">Home</a>
+                    <a href="seee.html">About Us</a>
+                    <a href="SEV.html" class="active">Services</a>
+                    <a href="companies.html">Companies</a>
+                    <a href="CON.html">Contact Us</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- UNMODIFIED SERVICES MAIN WORKSPACE -->
+    <main style="margin-top: 20px; margin-bottom: 20px;">
+        <div id="services" class="page active">
+            <div class="container">
+                <div class="content-wrapper">
+                    <section class="hero glass">
+                        <div class="title-section">
+                            <h1>Our <span class="highlight">Services</span></h1>
+                        </div>
+                        <p>Our platform connects multimedia students with media companies, making it easy to find and apply for internships that match their skills and career goals.</p>
+                    </section>
+                    <section class="services-grid">
+                        <div class="service-card glass">
+                            <div class="service-header">
+                                <h3>Attachment Search & Discovery</h3>
+                            </div>
+                            <p>Quickly locate specific media files using advanced filters, tags, and keywords. Instant search results help you find attachments efficiently even in large libraries.</p>
+                            <ul class="service-features">
+                                <li>Advanced search filters to find specific multimedia attachments quickly</li>
+                                <li>Tagging and categorization to organize attachments for easy retrieval</li>
+                                <li>Support for searching by file type, date, size, or keywords</li>
+                            </ul>
+                        </div>
+                        <div class="service-card glass">
+                            <div class="service-header">
+                                <h3>Multimedia Upload & Sharing</h3>
+                            </div>
+                            <p>Enable users to effortlessly upload, organize, and share multimedia files across various platforms with secure access and easy sharing options.</p>
+                            <ul class="service-features">
+                                <li>Simplified upload process supporting multiple file formats (images, videos, audio, documents).t</li>
+                                <li>Bulk upload options to save time for users with large media libraries.</li>
+                                <li>Secure sharing links with customizable privacy settings and expiration dates.</li>
+                            </ul>
+                        </div>
+                        <div class="service-card glass">
+                            <div class="service-header">
+                                <h3>Secure Attachment Access</h3>
+                            </div>
+                            <p>Control who can view or download attachments with permissions, encrypted storage, and activity logs. Share links with customizable access rights and expiration dates.</p>
+                            <ul class="service-features">
+                                <li>Activity logs to monitor who accessed or modified attachments</li>
+                                <li>Encrypted storage to ensure media privacy and data security</li>
+                                <li>Link sharing with customizable access rights and expiration</li>
+                            </ul>
+                        </div>
+                        <div class="service-card glass">
+                            <div class="service-header">
+                                <h3>API & Integration</h3>
+                            </div>
+                            <p>Developers can integrate search and retrieval functions into their apps with robust APIs and webhooks. Customize queries and connect with third-party storage.</p>
+                            <ul class="service-features">
+                                <li>Integration with third-party cloud storage or platforms</li>
+                                <li>API access for developers to integrate attachment search and retrieval into their apps</li>
+                            </ul>
+                        </div>
+                        <div class="service-card glass">
+                            <div class="service-header">
+                                <h3>Cross-Device Sync & Access</h3>
+                            </div>
+                            <p>Synchronize attachments across devices for seamless access anywhere. Supports offline usage with local caching features.</p>
+                            <ul class="service-features">
+                                <li>Support offline access with local caching</li>
+                                <li>Synchronize attachments across multiple devices for seamless access</li>
+                            </ul>
+                        </div>
+                        <div class="service-card glass">
+                            <div class="service-header">
+                                <h3>Mobile App or Responsive Design</h3>
+                            </div>
+                            <p>Design a mobile-friendly interface or dedicated app for on-the-go access. Ensures usability across all devices.</p>
+                            <ul class="service-features">
+                                <li>Dedicated mobile app for enhanced functionality</li>
+                                <li>Mobile-friendly interface for on-the-go access</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PERFECTLY ALIGNED MASTER FOOTER -->
+    <div id="footer" style="margin-top: 40px;">
+        <div class="container">
+            <footer class="glass">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="seee.html">About Us</a>
+                        <a href="#" id="termsButton">Terms of Service</a>
+                        <a href="CON.html">Contact</a>
+                    </div>
+                    <div class="copyright">
+                        &copy; 2026 Internship Finder. Crafted with passion. Design by GlitchhKing
+                    </div>
+                </div>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/glitchhking" target="_blank" title="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@glitchhking" target="_blank" title="Follow us on TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Centered modal for Terms and Conditions -->
+    <div id="centerModal" class="center-modal">
+        <div class="modal-box">
+            <span class="close-center" id="closeCenter">&times;</span>
+            <h2 style="color: black;">Terms and Conditions</h2>
+            <p style="color: black;">Welcome to the Internship Finder, Wagwan Users! By accessing or using our website, you agree to comply with these Terms and Conditions. Please read them carefully. If you do not agree, do not use our site.<br>
+            <strong>Use of Content:</strong> All content on this website is owned or licensed by <strong>Internship Finder.</strong> Unauthorized use is prohibited.<br>
+            <strong>User Conduct:</strong> Users agree not to engage in harmful, illegal, or disruptive activities.<br>
+            <strong>Privacy:</strong> Your data is handled according to our Privacy Policy, which is incorporated into these terms.<br>
+            <strong>Liability:</strong> Wagwan Users is not liable for damages resulting from the use of this site.</p>
+        </div>
+    </div>
+
+    <!-- Poster Ad Overlay Modals -->
+    <div id="posterAdModal" class="poster-overlay">
+        <div class="poster-box">
+            <span class="close-poster" id="closePoster">&times;</span>
+            <img src="attachment finder.jpg" alt="Poster Image" style="width: 100%; border-radius: 8px; display: block;">
+        </div>
+    </div>
+
+    <!-- Engine Control Logic Scripts -->
+    <script>
+        // Consent Overlay Initialization Loop
+        function acceptCookies() {
+            const banner = document.getElementById('consentBanner');
+            banner.classList.add('hidden-consent');
+            setTimeout(() => { banner.style.display = 'none'; }, 500);
+            localStorage.setItem('wagwan_consent', 'true');
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('wagwan_consent') === 'true') {
+                const banner = document.getElementById('consentBanner');
+                if (banner) banner.style.display = 'none';
+            }
+        });
+
+        // Original Terms Modal script handles
+        const termsBtn = document.getElementById('termsButton');
+        const modal = document.getElementById('centerModal');
+        const closeBtn = document.getElementById('closeCenter');
+
+        termsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.classList.add('show');
+        });
+
+        closeBtn.addEventListener('click', function() {
+            modal.classList.remove('show');
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target == modal) {
+                modal.classList.remove('show');
+            }
+        });
+
+        // Unmodified Poster Ad Execution Modules
+        const posterAd = document.getElementById('posterAdModal');
+        const closePoster = document.getElementById('closePoster');
+
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                posterAd.classList.add('active');
+            }, 500); 
+        });
+
+        closePoster.addEventListener('click', function() {
+            posterAd.classList.remove('active');
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target == posterAd) {
+                posterAd.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

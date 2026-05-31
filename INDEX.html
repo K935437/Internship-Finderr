@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="mmm.css" />
+    <style>
+        /* --- BASE STYLES --- */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #262a34; 
+            color: #ccc;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- HERO BANNER --- */
+        .hero-wrapper {
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .hero {
+            position: relative;
+            height: 50vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #1a1e26;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slideshow-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        .slide {
+            width: 100%; height: 100%;
+            position: absolute;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide.active { opacity: 1; }
+
+        .glass-banner-card {
+            position: relative;
+            z-index: 10;
+            padding: 40px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* --- FEATURE CARDS --- */
+        .features-section-container {
+            margin-bottom: 20px;
+        }
+
+        .features {
+            background-color: #0d0d0d;
+            padding: 40px 0;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.05);
+        }
+
+        .feature-cards {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            width: 280px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: #00ffff;
+        }
+
+        /* --- MODAL STYLES --- */
+        .center-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+        }
+
+        .center-modal.show { display: flex; }
+
+        .modal-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 80%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .center-modal.show .modal-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .close-center {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* --- SOCIAL MEDIA --- */
+        .social-media {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .social-media a {
+            color: #fff;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-media a:hover {
+            color: #00ffff;
+            transform: translateY(-5px) scale(1.1);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+
+        .social-media a:hover .fa-tiktok {
+            filter: drop-shadow(2px 0px 0px #ff0050) drop-shadow(-2px 0px 0px #00f2ea);
+        }
+
+        /* --- CONSENT OVERLAY STYLES --- */
+        .cookie-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Blocks everything else */
+            transition: opacity 0.5s ease;
+        }
+
+        .cookie-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00ffff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .cookie-card h2 {
+            color: #00ffff;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cookie-card p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .accept-btn {
+            background: #00ffff;
+            color: #000;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .accept-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #00ffff;
+            letter-spacing: 1px;
+        }
+
+        .hidden-consent {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="consentBanner" class="cookie-overlay">
+        <div class="cookie-card">
+            <i class="fas fa-shield-halved" style="font-size: 3.5rem; color: #00ffff; margin-bottom: 20px;"></i>
+            <h2>Entry Protocol</h2>
+            <p>Welcome to <strong>MediaConnect</strong>. To maintain the integrity of our creative network and proceed to the dashboard, please accept our terms and cookie usage.</p>
+            <button class="accept-btn" onclick="acceptCookies()">Accept & Enter</button>
+        </div>
+    </div>
+
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <header>
+        <div class="container" style="padding-top: 20px;">
+            <nav class="glass">
+                <logo style="display: flex; align-items: center; gap: 15px;">
+                    <img src="i see.png" alt="Your Logo" width="50" />
+                    <span style="color: #00ffff; font-size: 1rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; font-family: 'Orbitron', sans-serif;">
+                        Internship Finder
+                    </span>
+                </logo>
+                <div class="nav-links">
+                    <a href="INDEX.html" class="active">Home</a>
+                    <a href="seee.html">About Us</a>
+                    <a href="SEV.html">Services</a>
+                    <a href="companies.html">Companies</a>
+                    <a href="CON.html">Contact Us</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero-wrapper">
+        <div class="container">
+            <section id="home" class="hero">
+                <div class="slideshow-container">
+                    <div class="slide active" style="background-image: url('WhatsApp Image 2026-03-08 at 15.57.57.jpeg');"></div>
+                    <div class="slide" style="background-image: url('WhatsApp Image 2026-04-12 at 13.12.22.jpeg');"></div>
+                </div>
+                
+                <div class="glass-banner-card">
+                    <h2 style="color:#00ffff; text-transform: uppercase;">MediaConnect</h2>
+                    <p>Bridging Multimedia Talents with Industry Opportunities</p>
+                    <br>
+                    <a href="companies.html" style="color:#00ffff; text-decoration:none; border: 1px solid #00ffff; padding: 10px 20px; border-radius: 20px;">Get Started</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="features-section-container">
+        <div class="container">
+            <section id="features" class="features">
+                <div class="feature-cards">
+                    <div class="card">
+                        <h3>For Students</h3>
+                        <p>Showcase your portfolio and find internships.</p>
+                    </div>
+                    <div class="card">
+                        <h3>For Companies</h3>
+                        <p>Discover talented students for recruitment.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Community</h3>
+                        <p>Join a vibrant creative network.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="footer">
+        <div class="container">
+            <footer class="glass">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="seee.html">About Us</a>
+                        <a href="#" id="termsButton">Terms of Service</a>
+                        <a href="CON.html">Contact</a>
+                    </div>
+                    <div class="copyright">
+                        &copy; 2026 Internship Finder. Crafted with passion. Design by GlitchhKing
+                    </div>
+                </div>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/glitchhking" target="_blank" title="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@glitchhking" target="_blank" title="Follow us on TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <div id="centerModal" class="center-modal">
+        <div class="modal-box">
+            <span class="close-center" id="closeCenter">&times;</span>
+            <h2 style="color: black;">Terms and Conditions</h2>
+            <p style="color: black;">
+                Welcome to the Internship Finder, Wagwan Users! By accessing or using our website, you agree to comply with these Terms and Conditions. Please read them carefully.<br><br>
+                <strong>Use of Content:</strong> All content on this website is owned or licensed by <strong>Internship Finder.</strong> Unauthorized use is prohibited.<br>
+                <strong>User Conduct:</strong> Users agree not to engage in harmful, illegal, or disruptive activities.<br>
+                <strong>Privacy:</strong> Your data is handled according to our Privacy Policy.<br>
+                <strong>Liability:</strong> Wagwan Users is not liable for damages resulting from the use of this site.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Consent Overlay Logic
+        function acceptCookies() {
+            const banner = document.getElementById('consentBanner');
+            banner.classList.add('hidden-consent');
+            // Remove from DOM after transition to ensure no click blocking
+            setTimeout(() => { banner.style.display = 'none'; }, 500);
+            localStorage.setItem('wagwan_consent', 'true');
+        }
+
+        // Check if user has already accepted on page load
+        window.onload = function() {
+            if (localStorage.getItem('wagwan_consent') === 'true') {
+                document.getElementById('consentBanner').style.display = 'none';
+            }
+        };
+
+        // Modal Trigger
+        const termsBtn = document.getElementById('termsButton');
+        const modal = document.getElementById('centerModal');
+        const closeBtn = document.getElementById('closeCenter');
+
+        termsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.classList.add('show');
+        });
+
+        closeBtn.addEventListener('click', function() {
+            modal.classList.remove('show');
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target == modal) {
+                modal.classList.remove('show');
+            }
+        });
+
+        // Slideshow Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        setInterval(nextSlide, 5000); // Change image every 5 seconds
+    </script>
+</body>
+</html>

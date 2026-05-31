@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About Us</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="mmm.css" />
+    <style>
+        /* --- BASE STYLES --- */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #262a34; 
+            color: #fff;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- CONSENT OVERLAY STYLES --- */
+        .cookie-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .cookie-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00ffff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .cookie-card h2 {
+            color: #00ffff;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cookie-card p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .accept-btn {
+            background: #00ffff;
+            color: #000;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .accept-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #00ffff;
+            letter-spacing: 1px;
+        }
+
+        .hidden-consent {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- UNMODIFIED ABOUT US SPECIFIC SECTION STYLES --- */
+        .about-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .text-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .text-content h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .text-content h1 span {
+            color: #00ffff;
+        }
+
+        .description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .slideshow-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            height: auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+
+        .slides {
+            display: flex;
+            width: 300%; 
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .slide img {
+            width: 35%;
+            height: auto;
+            display: block;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        /* --- SOCIAL MEDIA HOVER TRANSLATIONS --- */
+        .social-media {
+            display: flex;
+            justify-content: center;
+            gap: 30px; 
+            margin-bottom: 20px;
+        }
+
+        .social-media a {
+            color: #fff;
+            font-size: 2rem; 
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-media a:hover {
+            color: #00ffff; 
+            transform: translateY(-5px) scale(1.1);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+
+        .social-media a:hover .fa-facebook-f {
+            color: #1877F2; 
+        }
+
+        .social-media a:hover .fa-tiktok {
+            filter: drop-shadow(2px 0px 0px #ff0050) drop-shadow(-2px 0px 0px #00f2ea);
+        }
+
+        /* --- TERMS MODAL STYLES --- */
+        .center-modal {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+        }
+
+        .center-modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 80%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .center-modal.show .modal-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .close-center {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        @media(max-width: 768px) {
+            .about-section {
+                flex-direction: column;
+            }
+            .text-content {
+                text-align: center;
+            }
+            .slideshow-container {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Consent Overlay -->
+    <div id="consentBanner" class="cookie-overlay">
+        <div class="cookie-card">
+            <i class="fas fa-shield-halved" style="font-size: 3.5rem; color: #00ffff; margin-bottom: 20px;"></i>
+            <h2>Entry Protocol</h2>
+            <p>Welcome to <strong>MediaConnect</strong>. To maintain the integrity of our creative network and proceed to the dashboard, please accept our terms and cookie usage.</p>
+            <button class="accept-btn" onclick="acceptCookies()">Accept & Enter</button>
+        </div>
+    </div>
+
+    <!-- Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container" style="padding-top: 20px;">
+            <nav class="glass">
+                <logo style="display: flex; align-items: center; gap: 15px;">
+                    <img src="i see.png" alt="Your Logo" width="50" />
+                    <span style="color: #00ffff; font-size: 1rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; font-family: 'Orbitron', sans-serif;">
+                        Internship Finder
+                    </span>
+                </logo>
+                <div class="nav-links">
+                    <a href="INDEX.html">Home</a>
+                    <a href="seee.html" class="active">About Us</a>
+                    <a href="SEV.html">Services</a>
+                    <a href="companies.html">Companies</a>
+                    <a href="CON.html">Contact Us</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- UNMODIFIED MIDDLE WORKSPACE CONTENT -->
+    <main style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="container">
+            <div class="about-section">
+                <div class="text-content">
+                    <h1>About <span>Us</span></h1>
+                    <p class="description">
+                        At the heart of our initiative is a commitment to transforming how multimedia students connect with industry opportunities.
+                        <br/><br/>
+                        Recognizing the rapid growth of the media sector and the challenges students face in securing relevant internships, our project aims to create a dedicated digital platform that simplifies this process for everyone involved.
+                        <br/><br/>
+                        Our Vision
+                        To become the leading digital platform that connects multimedia students with meaningful internship opportunities, fostering growth, innovation, and future-ready professionals in the media industry.
+                        <br/><br/>
+                        Our Values
+                        We believe in fostering innovation, accessibility, and industry collaboration. Our platform is designed to empower students to take control of their career development while enabling media companies to discover talented, motivated individuals. We are dedicated to bridging the disconnect between education and employment, promoting a seamless transition from learning to professional practice.
+                        <br/><br/>
+                    </p>
+                </div>
+                <!-- Image slideshow (same position) -->
+                <div class="slideshow-container" id="slideshow">
+                    <div class="slides" id="slides">
+                        <div class="slide"><img src="IMG_2856.JPG" /></div>
+                        <div class="slide"><img src="IMG_2855.JPG" /></div>
+                        <div class="slide"><img src="IMG_2842.JPG" /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PERFECTLY ALIGNED FOOTER -->
+    <div id="footer" style="margin-top: 40px;">
+        <div class="container">
+            <footer class="glass">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="seee.html">About Us</a>
+                        <a href="#" id="termsButton">Terms of Service</a>
+                        <a href="CON.html">Contact</a>
+                    </div>
+                    <div class="copyright">
+                        &copy; 2026 Internship Finder. Crafted with passion. Design by GlitchhKing
+                    </div>
+                </div>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/glitchhking" target="_blank" title="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@glitchhking" target="_blank" title="Follow us on TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Centered modal for Terms and Conditions -->
+    <div id="centerModal" class="center-modal">
+        <div class="modal-box">
+            <span class="close-center" id="closeCenter">&times;</span>
+            <h2 style="color: black;">Terms and Conditions</h2>
+            <p style="color: black;">Welcome to the Internship Finder, Wagwan Users! By accessing or using our website, you agree to comply with these Terms and Conditions. Please read them carefully. If you do not agree, do not use our site.<br>
+            <strong>Use of Content:</strong> All content on this website is owned or licensed by <strong>Internship Finder.</strong> Unauthorized use is prohibited.<br>
+            <strong>User Conduct:</strong> Users agree not to engage in harmful, illegal, or disruptive activities.<br>
+            <strong>Privacy:</strong> Your data is handled according to our Privacy Policy, which is incorporated into these terms.<br>
+            <strong>Liability:</strong> Wagwan Users is not liable for damages resulting from the use of this site.</p>
+        </div>
+    </div>
+
+    <!-- Core Engine Scripts -->
+    <script>
+        // Consent Overlay Activation Loop
+        function acceptCookies() {
+            const banner = document.getElementById('consentBanner');
+            banner.classList.add('hidden-consent');
+            setTimeout(() => { banner.style.display = 'none'; }, 500);
+            localStorage.setItem('wagwan_consent', 'true');
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('wagwan_consent') === 'true') {
+                const banner = document.getElementById('consentBanner');
+                if (banner) banner.style.display = 'none';
+            }
+        });
+
+        // Unmodified Original Modal Functionality
+        const termsBtn = document.getElementById('termsButton');
+        const modal = document.getElementById('centerModal');
+        const closeBtn = document.getElementById('closeCenter');
+
+        termsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.classList.add('show');
+        });
+
+        closeBtn.addEventListener('click', function() {
+            modal.classList.remove('show');
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target == modal) {
+                modal.classList.remove('show');
+            }
+        });
+
+        // Unmodified Slideshow Engine Matrix (Moves images side by side 3 times)
+        const slidesContainer = document.getElementById('slides');
+        const totalSlides = 3; 
+        let currentIndex = 0;
+        let cycleCount = 0;
+        const maxCycles = 3; 
+
+        function slideNext() {
+            currentIndex++;
+            if (currentIndex >= totalSlides) {
+                currentIndex = 0;
+                cycleCount++;
+                if (cycleCount >= maxCycles) {
+                    clearInterval(slideInterval);
+                    return;
+                }
+            }
+            slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        const slideInterval = setInterval(slideNext, 3000); 
+    </script>
+</body>
+</html>
